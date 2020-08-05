@@ -2,15 +2,15 @@ import React from 'react';
 
 
 class CustomerAccount extends React.Component{
-   
-    constructor(props)
+  
+    constructor(userName,password,initialBalance)
     {
-        super(props)
+        super()
         this.state={
-           
-            balance:0,
-            pin:"1121",
-            historyMessage: [],
+            name: userName,
+            balance:initialBalance,
+            pin:password,
+            historyMessages: [],
           
         }
         
@@ -22,7 +22,7 @@ class CustomerAccount extends React.Component{
     deposit = (amount) =>
     {
         this.state.balance+=amount;
-        this.state.historyMessage.push("Deposited ${amount} into account as of date");
+        this.state.historyMessages.push("Deposited "+amount+" into account as of date");
          
         
 
@@ -30,7 +30,7 @@ class CustomerAccount extends React.Component{
     withdraw = (amount) =>
     {
         this.state.balance-=amount;
-        this.state.historyMessage.push("Withdrawn ${amount} out of account as of date");
+        this.state.historyMessages.push("Withdrawn "+amount+" out of account as of date");
     }
     updatePin = (newPin) =>
     {
@@ -43,6 +43,15 @@ class CustomerAccount extends React.Component{
         return this.state.pin;
     }
 
+    getUserName()
+    {
+        return this.state.name;
+    }
+    
+    getHistory()
+    {
+        return this.state.historyMessages;
+    }
 }
 
 export default CustomerAccount;
