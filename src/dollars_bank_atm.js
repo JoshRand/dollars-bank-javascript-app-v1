@@ -1,7 +1,8 @@
 import React from 'react';
-import CustomerAccount from './customer_account'
+import CustomerAccount from './customer_account';
 import ApplicationViews from './application_views';
-import { switchCase } from '@babel/types';
+import PasswordEncryption from './password_encryption';
+var en = new PasswordEncryption();
 var accnt = new CustomerAccount("a","a",123);
 const display = new ApplicationViews();
 var i = 0;
@@ -13,13 +14,13 @@ var accountList = [];
 accountList.push(accnt);
 var currentAccount;
 
-const introOptions = {
+const IntroOptions = {
     INTRO: 0,
     LOGIN: 1,
     CREATE_ACCOUNT: 2,
 
 }
-const loginOptions = {
+const LoginOptions = {
     LOGIN_INTRO: 0,
     CHECK_BALANCE: 1,
     PRINT_TRANSACTIONS: 2,
@@ -29,39 +30,42 @@ const loginOptions = {
     LOGOUT: 6,
 }
 
-var loginOption = loginOptions.LOGIN_INTRO;
-var introOption = introOptions.INTRO;
+var intro = display.intro();
+var loginOption = LoginOptions.LOGIN_INTRO;
+//var introOption = IntroOptions.INTRO;
 var introMessage = "";
 var loginMessage = "";
+var inputDisplay = display.inputDisplay(1);
 class BankAtm extends React.Component{
     constructor(props)
     {
         super(props)
         this.state={
+            introOption: IntroOptions.INTRO,
 
         }
     }
 
     render()
     {
-        
         console.log(""+accnt.getBalance());
         
         console.log(""+accnt.getBalance());
         while (i < 10) {
+           
             //console.log(i++)
-            switch(introOption)
+            switch(this.state.introOption)
             {
-                case introOptions.INTRO:
+                case IntroOptions.INTRO:
                     display.intro();
                     
                     break;
                 
-                case introOptions.LOGIN:
+                case IntroOptions.LOGIN:
                     display.login();
                     break;
 
-                case introOptions.CREATE_ACCOUNT:
+                case IntroOptions.CREATE_ACCOUNT:
                     
                     
                     break;
@@ -71,10 +75,11 @@ class BankAtm extends React.Component{
                     break;    
             }
             introMessage = prompt("Please enter a number 1 or 2", "");
-            introOption = parseInt(introMessage);
-            if(introOption === introOptions.LOGIN)
+            this.state.introOption = parseInt(introMessage);
+            if(this.state.introOption === IntroOptions.LOGIN)
             {
                 display.loginIntro(1);
+                //intro = display.loginIntro(1);
                 var name = prompt("Please enter your Login name", "<UserName>");
                 display.loginIntro(2);
                 var password = prompt("Please enter your Password", "<Password>");
@@ -84,7 +89,7 @@ class BankAtm extends React.Component{
                     {
                         isLoggedIn = true;
                         currentAccount = element;
-                       // break;
+                        
                     }
                     
                 });
@@ -92,29 +97,43 @@ class BankAtm extends React.Component{
                 while(isLoggedIn){
                     switch(loginOption)
                     {
-                        case loginOptions.LOGIN_INTRO:
+                        case LoginOptions.LOGIN_INTRO:
                             display.loginSuccessIntro(); 
                             loginMessage = prompt("Please enter a number 1 - 5", "");
                             loginOption = parseInt(loginMessage);
                             break;
     
-                        case loginOptions.CHECK_BALANCE:
+                        case LoginOptions.CHECK_BALANCE:
                             display.checkBalance(currentAccount.getBalance());
-                            loginOption = loginOptions.LOGIN_INTRO;
+                           
+                            loginOption = LoginOptions.LOGIN_INTRO;
                             break;
     
-                        case loginOptions.PRINT_TRANSACTIONS:
+                        case LoginOptions.PRINT_TRANSACTIONS:
                             display.printTransactions(currentAccount.getHistory());
 
-                            loginOption = loginOptions.LOGIN_INTRO;
+                            loginOption = LoginOptions.LOGIN_INTRO;
                             break;
     
-                        case loginOptions.UPDATE_PIN:
-                            display.updatePin();
-                            loginOption = loginOptions.LOGIN_INTRO;
+                        case LoginOptions.UPDATE_PIN:
+                            display.updatePin(1);
+                            var updatePinFirstString = prompt("Enter your desired PIN", "");
+                            display.updatePin(2);
+                            var updatePinSecondString = prompt("Enter your desired PIN again", "");
+                            if(updatePinFirstString === updatePinSecondString){
+                                currentAccount.updatePin(updatePinSecondString);
+                                console.log("Updated PIN");
+                            }
+                            accountList.forEach(element => {
+                                if(element.getUserName() === currentAccount.getUserName())
+                                {
+                                    element = currentAccount;
+                                }
+                                });
+                            loginOption = LoginOptions.LOGIN_INTRO;
                             break;
     
-                        case loginOptions.WITHDRAW:
+                        case LoginOptions.WITHDRAW:
                             display.withdraw();
                             var withdrawString = prompt("Enter the amount to Withdraw", "");
                             var withdrawAmount = parseInt(withdrawString);
@@ -125,10 +144,10 @@ class BankAtm extends React.Component{
                                 element = currentAccount;
                             }
                             });
-                            loginOption = loginOptions.LOGIN_INTRO;
+                            loginOption = LoginOptions.LOGIN_INTRO;
                             break;
     
-                        case loginOptions.DEPOSIT:
+                        case LoginOptions.DEPOSIT:
                             display.deposit();
                             var depositString = prompt("Enter the amount to Deposit", "");
                             var depositAmount = parseInt(depositString);
@@ -139,19 +158,19 @@ class BankAtm extends React.Component{
                                 element = currentAccount;
                             }
                             });
-                            loginOption = loginOptions.LOGIN_INTRO;
+                            loginOption = LoginOptions.LOGIN_INTRO;
                             break;
     
-                        case loginOptions.LOGOUT:
+                        case LoginOptions.LOGOUT:
                             display.logout();
                             isLoggedIn = false;
-                            introOption = introOptions.INTRO;
-                            loginOption = loginOptions.LOGIN_INTRO;
+                            this.state.introOption = IntroOptions.INTRO;
+                            loginOption = LoginOptions.LOGIN_INTRO;
                             break;
                         default:
                             break;
                     }
-                    // if(isLoggedIn && loginOption == loginOptions.LOGIN_INTRO)
+                    // if(isLoggedIn && loginOption == LoginOptions.LOGIN_INTRO)
                     // {
                        
 
@@ -161,7 +180,7 @@ class BankAtm extends React.Component{
                 }
                 
             }
-            else if(introOption == introOptions.CREATE_ACCOUNT)
+            else if(this.state.introOption == IntroOptions.CREATE_ACCOUNT)
             {
                 display.createAccountIntro(1);
                 var name = prompt("Please enter your Login name", "<UserName>");
@@ -177,29 +196,38 @@ class BankAtm extends React.Component{
                     console.log(element.getPin());
                 });
 
-                introOption = introOptions.INTRO;
+                this.state.introOption = IntroOptions.INTRO;
                 
             }
-        }; //var name = window.prompt("Enter your name: ");
+        }
+           
+         //var name = window.prompt("Enter your name: ");
 
-        
-        return(
+         return(
             
-            
+            <form onSubmit={this.mySubmitHandler}>
             <div className="BankAtm">
-                <a>{accnt.getBalance()}</a>
+                {intro}
                 <br/>
-                <a>{accnt.getPin()}</a>
-                <h2>hi2</h2>
-                <a>{accnt.deposit(200)}</a>
-                <a>{accnt.getBalance()}</a>
-                <a>run</a>
-                
+                  {inputDisplay}
+                  {this.state.inputOption}
+                  <br/>
+                  <input type = "text" />
+                  <input type = 'submit' onClick={this.myIntroOptionHandler}/>
+                <a>{this.state.introOption}</a>
+                <a>{}</a>
+                <a></a>
             </div>
-        )
+            </form>
+        );
     }
+    myIntroOptionHandler = (event) => {
+        this.setState({introOption: event.target.value});
        
-    
-    
+      }
 }
+       
+
+
+
 export default BankAtm;

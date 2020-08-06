@@ -14,9 +14,6 @@ class DollarsApp extends React.Component{
 
         return(
             <div className="DollarsAppRender">
-                <h1>
-                    hi
-                </h1>
                 <BankAtm/>
             </div>
         )

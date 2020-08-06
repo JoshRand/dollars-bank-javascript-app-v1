@@ -13,7 +13,7 @@ class CustomerAccount extends React.Component{
             historyMessages: [],
           
         }
-        
+        this.state.historyMessages.push("Initial deposit of "+initialBalance+" into account as of date");
     }
     getBalance()
     {
