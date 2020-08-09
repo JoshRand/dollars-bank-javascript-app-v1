@@ -13,7 +13,8 @@ class CustomerAccount extends React.Component{
             historyMessages: [],
           
         }
-        this.state.historyMessages.push("Initial deposit of "+initialBalance+" into account as of date");
+        var date = new Date();
+        this.state.historyMessages.push("Initial deposit of "+initialBalance+" into account as of "+date.toDateString());
     }
     getBalance()
     {
@@ -21,16 +22,18 @@ class CustomerAccount extends React.Component{
     }
     deposit = (amount) =>
     {
+        var date = new Date();
         this.state.balance+=amount;
-        this.state.historyMessages.push("Deposited "+amount+" into account as of date");
+        this.state.historyMessages.push("Deposited "+amount+" into account as of " + date.toDateString());
          
         
 
     }
     withdraw = (amount) =>
     {
+        var date = new Date();
         this.state.balance-=amount;
-        this.state.historyMessages.push("Withdrawn "+amount+" out of account as of date");
+        this.state.historyMessages.push("Withdrawn "+amount+" out of account as of "+date.toDateString());
     }
     updatePin = (newPin) =>
     {

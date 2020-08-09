@@ -17,9 +17,7 @@ class DollarsApp extends React.Component{
                 <BankAtm/>
             </div>
         )
-
-
-
+        
     }
 
 }
